@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.photo_shop.cmpt820.ui.MainController">
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem onAction="#handleOpenFile" text="Open File"/>
+                <MenuItem onAction="#handleExit" text="Exit"/>
+            </Menu>
+            <Menu text="Core Operations">
+                <MenuItem onAction="#handleGrayscale" text="Grayscale"/>
+                <MenuItem onAction="#handleOrderedDithering" text="Ordered Dithering"/>
+                <MenuItem onAction="#handleAutoLevel" text="Auto Level"/>
+                <MenuItem onAction="#handleHuffman" text="Huffman"/>
+            </Menu>
+        </MenuBar>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.75">
+            <items>
+                <AnchorPane fx:id="imageManipulationPane">
+                    <ImageView fx:id="originalImageView" preserveRatio="true" smooth="true" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"/>
+                </AnchorPane>
+                <VBox>
+                    <TitledPane text="Image Operations" expanded="true">
+                        <VBox>
+                            <!-- Add buttons or controls for your operations here -->
+<!--                            <Button text="Grayscale" onAction="#handleGrayscale"/>-->
+<!--                            <Button text="Ordered Dithering" onAction="#handleOrderedDithering"/>-->
+<!--                            <Button text="Auto Level" onAction="#handleAutoLevel"/>-->
+<!--                            <Button text="Huffman" onAction="#handleHuffman"/>-->
+                            <!-- Additional operations can be added here -->
+                        </VBox>
+                    </TitledPane>
+                    <!-- Additional operation groups can be added here as TitledPanes or other components -->
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+    <bottom>
+        <Label fx:id="statusLabel" text="Status: Ready"/>
+    </bottom>
+</BorderPane>

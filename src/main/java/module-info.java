@@ -8,6 +8,7 @@ module com.example.cmpt820 {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires javafx.swing;
 
     opens com.photo_shop.cmpt820.ui to javafx.fxml;
     exports com.photo_shop.cmpt820.algorithm;

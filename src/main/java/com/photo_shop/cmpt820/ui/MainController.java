@@ -1,6 +1,11 @@
 package com.photo_shop.cmpt820.ui;
 
 
+import com.photo_shop.cmpt820.BMPParser.BMPParser;
+import com.photo_shop.cmpt820.algorithm.AutoLevel;
+import com.photo_shop.cmpt820.algorithm.GrayScale;
+import com.photo_shop.cmpt820.algorithm.ImageOperation;
+import com.photo_shop.cmpt820.algorithm.OrderedDithering;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
@@ -25,6 +30,8 @@ public class MainController {
     private MenuItem openFileMenuItem, exitMenuItem;
     @FXML
     private ImageView originalImageView; // This matches the fx:id in your FXML
+    @FXML
+    private ImageView staticOriginalImageView; // This matches the fx:id in your FXML
     @FXML
     private ImageView processedImageView; // This matches the fx:id in your FXML
     @FXML
@@ -222,14 +229,17 @@ public class MainController {
     private void handleOpenFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open BMP File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BMP Files", "*.*"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BMP Files", "*.bmp"));
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
-            Image image = new Image(file.toURI().toString());
-            originalImageView.setImage(image);
-            // Reset processedImageView and statusLabel when a new image is loaded
-            processedImageView.setImage(null);
-            statusLabel.setText("Status: Image loaded successfully.");
+            Image image = BMPParser.parseBMP(file);
+            if (image != null) {
+                originalImageView.setImage(image);
+                staticOriginalImageView.setImage(image);
+                statusLabel.setText("Status: Image loaded successfully.");
+            } else {
+                statusLabel.setText("Status: Failed to load image.");
+            }
         }
     }
 
@@ -239,31 +249,49 @@ public class MainController {
         System.exit(0);
     }
 
-    // Method to convert and display the image in grayscale
-    @FXML
-    private void handleGrayscale() {
-        if (originalImageView.getImage() != null) {
-            Image grayImage = ImageUtils.convertToGrayscale(originalImageView.getImage());
-            processedImageView.setImage(grayImage);
-            statusLabel.setText("Status: Grayscale conversion applied.");
-        }
-    }
-
     // Method to apply ordered dithering
     @FXML
     private void handleOrderedDithering() {
-        // Implement ordered dithering conversion in ImageUtils
-        // This is a placeholder for where you would call the method
-        statusLabel.setText("Status: Ordered dithering feature is not implemented yet.");
+        if (originalImageView.getImage() != null) {
+            // First, convert the original image to grayscale
+            ImageOperation grayscaleOperation = new GrayScale();
+            Image grayscaleImage = grayscaleOperation.apply(originalImageView.getImage());
+
+            // Apply ordered dithering to the grayscale image
+            ImageOperation ditheringOperation = new OrderedDithering();
+            Image ditheredImage = ditheringOperation.apply(grayscaleImage);
+
+            // Assuming you have a way to display images side by side.
+            // This might involve updating your UI to accommodate two images.
+            // For simplicity, let's just update the processedImageView for now.
+            originalImageView.setImage(ditheredImage);
+
+            // Update status
+            statusLabel.setText("Status: Ordered Dithering applied.");
+        } else {
+            statusLabel.setText("Status: No image loaded.");
+        }
     }
+
 
     // Method to apply auto level
     @FXML
     private void handleAutoLevel() {
-        // Implement auto level conversion in ImageUtils
-        // This is a placeholder for where you would call the method
-        statusLabel.setText("Status: Auto level feature is not implemented yet.");
+        if (originalImageView.getImage() != null) {
+            ImageOperation autoLevelOperation = new AutoLevel();
+            Image autoLeveledImage = autoLevelOperation.apply(originalImageView.getImage());
+
+            // Display the original and auto-leveled images side by side
+            // This might involve updating your UI layout to accommodate two images side by side
+            // For simplicity, let's just update the processedImageView for now
+            originalImageView.setImage(autoLeveledImage);
+
+            statusLabel.setText("Status: Auto Level applied.");
+        } else {
+            statusLabel.setText("Status: No image loaded.");
+        }
     }
+
 
     // Method to calculate and show Huffman encoding results
     @FXML
@@ -272,4 +300,25 @@ public class MainController {
         // This is a placeholder for where you would display the Huffman encoding results
         statusLabel.setText("Status: Huffman coding feature is not implemented yet.");
     }
+    @FXML
+    private void handleGrayscale() {
+        if (originalImageView.getImage() != null) {
+            // Create a new instance of your grayscale operation
+            ImageOperation grayscaleOperation = new GrayScale();
+
+            // Apply the operation to the current image in the originalImageView
+            Image grayscaleImage = grayscaleOperation.apply(originalImageView.getImage());
+
+            // Set the processed image to your originalImageView to display the result
+            originalImageView.setImage(grayscaleImage);
+
+            // Update the status label to indicate the operation's completion
+            statusLabel.setText("Status: Grayscale applied.");
+        } else {
+            // Update the status label if there's no image to process
+            statusLabel.setText("Status: No image loaded.");
+        }
+    }
+
+
 }

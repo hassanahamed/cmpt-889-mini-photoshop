@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.ImageView?>
 
+<?import javafx.scene.control.Button?>
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.photo_shop.cmpt820.ui.MainController">
     <top>
         <MenuBar>
@@ -31,16 +32,24 @@
                 <AnchorPane fx:id="imageManipulationPane">
                     <ImageView fx:id="originalImageView" preserveRatio="true" smooth="true" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"/>
                 </AnchorPane>
+
                 <VBox>
                     <TitledPane text="Image Operations" expanded="true">
-                        <VBox>
-                            <!-- Add buttons or controls for your operations here -->
-<!--                            <Button text="Grayscale" onAction="#handleGrayscale"/>-->
-<!--                            <Button text="Ordered Dithering" onAction="#handleOrderedDithering"/>-->
-<!--                            <Button text="Auto Level" onAction="#handleAutoLevel"/>-->
-<!--                            <Button text="Huffman" onAction="#handleHuffman"/>-->
+                        <VBox spacing="10"> <!-- Added spacing for visual separation -->
+                            <!-- Grayscale Button -->
+                            <Button text="Grayscale" onAction="#handleGrayscale"/>
+                            <!-- Ordered Dithering Button -->
+                            <Button text="Ordered Dithering" onAction="#handleOrderedDithering"/>
+                            <!-- Auto Level Button -->
+                            <Button text="Auto Level" onAction="#handleAutoLevel"/>
                             <!-- Additional operations can be added here -->
                         </VBox>
+                    </TitledPane>
+
+                    <TitledPane fx:id="originalImageTitledPane" text="Original Image" expanded="false" collapsible="true">
+                        <AnchorPane>
+                            <ImageView fx:id="staticOriginalImageView" preserveRatio="true" smooth="true" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"/>
+                        </AnchorPane>
                     </TitledPane>
                     <!-- Additional operation groups can be added here as TitledPanes or other components -->
                 </VBox>

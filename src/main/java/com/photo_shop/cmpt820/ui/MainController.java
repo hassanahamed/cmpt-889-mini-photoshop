@@ -2,10 +2,7 @@ package com.photo_shop.cmpt820.ui;
 
 
 import com.photo_shop.cmpt820.BMPParser.BMPParser;
-import com.photo_shop.cmpt820.algorithm.AutoLevel;
-import com.photo_shop.cmpt820.algorithm.GrayScale;
-import com.photo_shop.cmpt820.algorithm.ImageOperation;
-import com.photo_shop.cmpt820.algorithm.OrderedDithering;
+import com.photo_shop.cmpt820.algorithm.*;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
@@ -40,12 +37,17 @@ public class MainController {
     @FXML
     private AnchorPane imageManipulationPane;
 
-    private Rectangle resizeBorder;
+    @FXML
+    private Label entropyLabel;
+    @FXML
+    private Label huffmanLabel;
 
     private Cursor resizingCursor = null; // Field to store the current resizing cursor
 
 
     private double initialMouseX;
+
+    private Image initialImage;
     private double initialMouseY;
 
     private Rectangle[] resizeHandles = new Rectangle[4];
@@ -234,6 +236,7 @@ public class MainController {
         if (file != null) {
             Image image = BMPParser.parseBMP(file);
             if (image != null) {
+                initialImage = image;
                 originalImageView.setImage(image);
                 staticOriginalImageView.setImage(image);
                 statusLabel.setText("Status: Image loaded successfully.");
@@ -265,6 +268,7 @@ public class MainController {
             // This might involve updating your UI to accommodate two images.
             // For simplicity, let's just update the processedImageView for now.
             originalImageView.setImage(ditheredImage);
+            staticOriginalImageView.setImage(grayscaleImage);
 
             // Update status
             statusLabel.setText("Status: Ordered Dithering applied.");
@@ -286,7 +290,22 @@ public class MainController {
             // For simplicity, let's just update the processedImageView for now
             originalImageView.setImage(autoLeveledImage);
 
+            staticOriginalImageView.setImage(initialImage);
+
             statusLabel.setText("Status: Auto Level applied.");
+        } else {
+            statusLabel.setText("Status: No image loaded.");
+        }
+    }
+
+    @FXML
+    private void handleReset() {
+        if (originalImageView.getImage() != null) {
+            originalImageView.setImage(initialImage);
+
+            staticOriginalImageView.setImage(initialImage);
+
+            statusLabel.setText("Status: Reset successful.");
         } else {
             statusLabel.setText("Status: No image loaded.");
         }
@@ -296,9 +315,21 @@ public class MainController {
     // Method to calculate and show Huffman encoding results
     @FXML
     private void handleHuffman() {
-        // Implement Huffman encoding in a suitable utility or algorithm class
-        // This is a placeholder for where you would display the Huffman encoding results
-        statusLabel.setText("Status: Huffman coding feature is not implemented yet.");
+        ImageOperation grayscaleOperation = new GrayScale();
+
+        // Apply the operation to the current image in the originalImageView
+        Image grayscaleImage = grayscaleOperation.apply(originalImageView.getImage());
+        int[] histogram = ImageUtils.calculateHistogram(grayscaleImage);
+        int totalPixels = (int) (grayscaleImage.getWidth() * grayscaleImage.getHeight());
+
+        double entropy = ImageUtils.calculateEntropy(histogram, totalPixels);
+        double avgHuffmanLength = HuffmanCoding.calculateAverageHuffmanCodeLength(histogram, totalPixels);
+
+        entropyLabel.setText(String.format("Entropy: %.2f", entropy));
+        huffmanLabel.setText(String.format("Average Huffman Length: %.2f", avgHuffmanLength));
+
+        // Update your GUI or log with entropy and average Huffman code length
+        // Note: For a GUI, you might set the text of a Label or TextArea
     }
     @FXML
     private void handleGrayscale() {
@@ -311,6 +342,8 @@ public class MainController {
 
             // Set the processed image to your originalImageView to display the result
             originalImageView.setImage(grayscaleImage);
+
+            staticOriginalImageView.setImage(initialImage);
 
             // Update the status label to indicate the operation's completion
             statusLabel.setText("Status: Grayscale applied.");

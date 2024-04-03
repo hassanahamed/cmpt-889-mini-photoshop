@@ -43,6 +43,11 @@
                             <!-- Auto Level Button -->
                             <Button text="Auto Level" onAction="#handleAutoLevel"/>
                             <!-- Additional operations can be added here -->
+                            <Button text="Huffman" onAction="#handleHuffman"/>
+                            <Label fx:id="entropyLabel" text="Entropy: "/>
+                            <Label fx:id="huffmanLabel" text="Average Huffman Length: "/>
+                            <Button text="Reset" onAction="#handleReset"/>
+                            <!-- Additional operations can be added here -->
                         </VBox>
                     </TitledPane>
 

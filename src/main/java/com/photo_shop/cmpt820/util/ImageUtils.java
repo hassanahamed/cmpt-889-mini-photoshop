@@ -8,27 +8,42 @@ import javafx.scene.paint.Color;
 
 public class ImageUtils {
 
-    /**
-     * Converts the given image to grayscale.
-     * @param image The original image to convert.
-     * @return A new Image object in grayscale.
-     */
-    public static Image convertToGrayscale(Image image) {
-        int width = (int) image.getWidth();
-        int height = (int) image.getHeight();
-        WritableImage grayImage = new WritableImage(width, height);
-        PixelReader pixelReader = image.getPixelReader();
-        PixelWriter pixelWriter = grayImage.getPixelWriter();
+
+    public static int[] calculateHistogram(Image grayscaleImage) {
+        int[] histogram = new int[256]; // For 256 grayscale levels
+        PixelReader reader = grayscaleImage.getPixelReader();
+        int width = (int) grayscaleImage.getWidth();
+        int height = (int) grayscaleImage.getHeight();
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Color color = pixelReader.getColor(x, y);
-                double grayLevel = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
-                Color grayColor = new Color(grayLevel, grayLevel, grayLevel, color.getOpacity());
-                pixelWriter.setColor(x, y, grayColor);
+                Color color = reader.getColor(x, y);
+                int value = (int) (color.getRed() * 255); // Assuming grayscale so R=G=B
+                histogram[value]++;
             }
         }
-
-        return grayImage;
+        return histogram;
     }
+
+    public static double calculateEntropy(int[] histogram, int totalPixels) {
+        double entropy = 0;
+        for (int count : histogram) {
+            if (count > 0) {
+                double probability = (double) count / totalPixels;
+                entropy -= probability * (Math.log(probability) / Math.log(2)); // Using log base 2
+            }
+        }
+        return entropy;
+    }
+
+    public static double calculateAverageHuffmanCodeLength(int[] histogram, int totalPixels) {
+        // This method would involve:
+        // 1. Building the Huffman tree based on the frequencies in the histogram.
+        // 2. Traversing the tree to calculate the weighted average length of Huffman codes.
+        // For the sake of this example, let's assume we return a placeholder value.
+        return 0; // Placeholder for demonstration purposes.
+    }
+
+
+
 }

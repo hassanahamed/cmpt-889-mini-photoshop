@@ -19,22 +19,18 @@ public class AutoLevel implements ImageOperation{
         PixelReader reader = input.getPixelReader();
         PixelWriter writer = output.getPixelWriter();
 
-        // Calculate histograms
         int[] histogramR = calculateHistogram(reader, width, height, Color::getRed);
         int[] histogramG = calculateHistogram(reader, width, height, Color::getGreen);
         int[] histogramB = calculateHistogram(reader, width, height, Color::getBlue);
 
-        // Calculate CDFs
         double[] cdfR = calculateCDF(histogramR);
         double[] cdfG = calculateCDF(histogramG);
         double[] cdfB = calculateCDF(histogramB);
 
-        // Normalize CDFs
         normalizeCDF(cdfR, width * height);
         normalizeCDF(cdfG, width * height);
         normalizeCDF(cdfB, width * height);
 
-        // Map original colors to stretched ones
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Color originalColor = reader.getColor(x, y);
@@ -81,7 +77,5 @@ public class AutoLevel implements ImageOperation{
         double newB = cdfB[(int) (originalColor.getBlue() * 255)];
         return new Color(newR, newG, newB, originalColor.getOpacity());
     }
-
-
 
 }

@@ -14,8 +14,8 @@ public class OrderedDithering implements ImageOperation {
             { 3, 11,  1,  9},
             {15,  7, 13,  5}
     };
-    private final int matrixSize = 4; // Size of the dither matrix
-    private final double scale = 17.0; // Scale factor for dithering (matrixSize^2 + 1)
+    private final int matrixSize = 4;
+    private final double scale = 17.0;
 
     @Override
     public Image apply(Image input) {
@@ -28,13 +28,11 @@ public class OrderedDithering implements ImageOperation {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Color color = reader.getColor(x, y);
-                double gray = color.getRed(); // Assuming the image is grayscale, R=G=B
+                double gray = color.getRed();
 
-                // Calculate the dithered pixel value
                 int matrixValue = ditherMatrix[y % matrixSize][x % matrixSize];
                 double ditheredGray = gray * scale;
 
-                // Apply the dithering threshold
                 if (ditheredGray > matrixValue) {
                     writer.setColor(x, y, Color.WHITE);
                 } else {

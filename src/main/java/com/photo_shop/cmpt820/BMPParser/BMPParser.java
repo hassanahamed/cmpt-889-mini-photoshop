@@ -15,24 +15,23 @@ public class BMPParser {
             raf.seek(10);
             int pixelDataOffset = Integer.reverseBytes(raf.readInt());
 
-            raf.seek(18); // Move to width
+            raf.seek(18);
             int width = Integer.reverseBytes(raf.readInt());
 
-            raf.seek(22); // Move to height
+            raf.seek(22);
             int height = Integer.reverseBytes(raf.readInt());
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-            raf.seek(pixelDataOffset); // Move to the beginning of pixel data
+            raf.seek(pixelDataOffset);
 
             byte[] pixel = new byte[3];
-            for (int y = height - 1; y >= 0; y--) { // BMP stores pixels bottom to top
+            for (int y = height - 1; y >= 0; y--) {
                 for (int x = 0; x < width; x++) {
                     raf.readFully(pixel);
                     int value = ((pixel[2] & 0xFF) << 16) | ((pixel[1] & 0xFF) << 8) | (pixel[0] & 0xFF);
                     bufferedImage.setRGB(x, y, value);
                 }
-                // Skip padding bytes, if any
                 int padding = (4 - (width * 3) % 4) % 4;
                 raf.skipBytes(padding);
             }

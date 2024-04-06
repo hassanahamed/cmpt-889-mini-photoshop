@@ -10,7 +10,7 @@ public class ImageUtils {
 
 
     public static int[] calculateHistogram(Image grayscaleImage) {
-        int[] histogram = new int[256]; // For 256 grayscale levels
+        int[] histogram = new int[256];
         PixelReader reader = grayscaleImage.getPixelReader();
         int width = (int) grayscaleImage.getWidth();
         int height = (int) grayscaleImage.getHeight();
@@ -18,7 +18,7 @@ public class ImageUtils {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Color color = reader.getColor(x, y);
-                int value = (int) (color.getRed() * 255); // Assuming grayscale so R=G=B
+                int value = (int) (color.getRed() * 255);
                 histogram[value]++;
             }
         }
@@ -30,19 +30,12 @@ public class ImageUtils {
         for (int count : histogram) {
             if (count > 0) {
                 double probability = (double) count / totalPixels;
-                entropy -= probability * (Math.log(probability) / Math.log(2)); // Using log base 2
+                entropy -= probability * (Math.log(probability) / Math.log(2));
             }
         }
         return entropy;
     }
 
-    public static double calculateAverageHuffmanCodeLength(int[] histogram, int totalPixels) {
-        // This method would involve:
-        // 1. Building the Huffman tree based on the frequencies in the histogram.
-        // 2. Traversing the tree to calculate the weighted average length of Huffman codes.
-        // For the sake of this example, let's assume we return a placeholder value.
-        return 0; // Placeholder for demonstration purposes.
-    }
 
 
 
